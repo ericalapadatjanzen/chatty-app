@@ -18,13 +18,40 @@ const wss = new SocketServer({ server });
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
 
-    console.log('received: %s', message);
-
-     ws.send(message);
+wss.broadcast = function broadcast(data) {
+  wss.clients.forEach(function each(client) {
+    //if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    //}
   });
+};
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(data) {
+    // Broadcast to everyone else.
+    wss.clients.forEach(function each(client) {
+    //   // if (client !== ws && client.readyState === WebSocket.OPEN) {
+    //   //if (client.readyState === SocketServer.OPEN) {
+    //     console.log("in the for loop");
+      console.log("client",client);
+      client.send(data);
+
+    //      //console.log('received: %s', data);
+    //   //}
+    });
+
+  });
+
+
+
+// wss.on('connection', function connection(ws) {
+//   ws.on('message', function incoming(message) {
+
+//     console.log('received: %s', message);
+
+//      ws.send(message);
+//   });
 
 
 
