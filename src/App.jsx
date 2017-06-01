@@ -1,6 +1,4 @@
 import React, {Component} from "react";
-// import uuidV1 from "node-uuid";
-
 import ChatBar from "./ChatBar.jsx"
 import MessageList from "./MessageList.jsx"
 
@@ -12,33 +10,63 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentUser: {name: "Erica"},
-      messages: [ ]
+      currentUser: "",
+      messages: []
     };
 
-this.addNewMessage = this.addNewMessage.bind(this);
+    this.addNewMessage = this.addNewMessage.bind(this);
+    // this.addNewNotification =this.addNewNotification.bind(this);
+    this.addNewUserName = this.addNewUserName.bind(this);
+  }
+
+  addNewNotification(note){
+    const notification = {
+      type: "postNotification",
+      content: note
+
+    }
+    this.socket.send(JSON.stringify(notification));
+    console.log("notification", notification)
   }
 
 
-   addNewMessage(name, content) {
+  addNewMessage(content) {
     const message = {
-      id: this.state.messages.length +1,
-      username: name,
-      content
+      username: this.state.username,
+      content,
+      type: "postMessage"
     };
     this.socket.send(JSON.stringify(message));
 
-    const newMessages = this.state.messages.concat(message);
-    this.setState({messages: newMessages})
-    console.log("content", content);
+    console.log("message", message)
 
   }
+
+  addNewUserName(oldUsername, newUserName){
+    this.setState({username:newUserName});
+    this.addNewNotification(`${oldUsername || "anonymous"} changed their name to ${newUserName}`)
+
+    }
+
+
+
 
   componentDidMount() {
 
     this.socket = new WebSocket("ws://127.0.0.1:3001");
-    this.socket.onmessage = function(message) {
-      console.log("Received message:", message);
+    console.log("this.state.messages", this.state.messages)
+
+    this.socket.onmessage = (message) => {
+      console.log("this", this)
+
+      const incomingObj = JSON.parse(message.data);
+
+
+      let notices = [];
+      notices = this.state.messages.concat(incomingObj);
+      console.log(notices);
+      this.setState({messages: notices});
+
   };
     this.socket.onopen = function(event) {
        console.log("connected to Server")
@@ -48,7 +76,6 @@ this.addNewMessage = this.addNewMessage.bind(this);
 }
 
   render() {
-    console.log("Rendering <App/>");
 
     return (
 
@@ -59,7 +86,9 @@ this.addNewMessage = this.addNewMessage.bind(this);
 
         <MessageList messages = {this.state.messages}/>
 
-      <ChatBar user={this.state.currentUser.name} newMessage={this.addNewMessage}/>
+      <ChatBar username={this.state.username}
+        newMessage={this.addNewMessage}
+        newUserName={this.addNewUserName} />
 
 
       </div>

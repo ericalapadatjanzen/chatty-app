@@ -9,12 +9,13 @@ class MessageList extends Component {
     const messages = this.props.messages.map(message =>{
       return <Message
         key= {message.id}
-        user= {message.username}
+        username= {message.username}
         content= {message.content}
+        type= {message.type}
       />
 
     });
-  console.log("Rendering <MessageList/>");
+
 
     return (
 

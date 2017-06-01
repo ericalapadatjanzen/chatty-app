@@ -2,6 +2,7 @@
 
 const express = require("express");
 const SocketServer = require("ws").Server;
+const uuidV1 = require("node-uuid");
 
 // Set the port to 3001
 const PORT = 3001;
@@ -21,37 +22,33 @@ const wss = new SocketServer({ server });
 
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
-    //if (client.readyState === WebSocket.OPEN) {
-      client.send(data);
-    //}
+      client.send(JSON.stringify(data));
+      // client.send(JSON.stringify(notification));
+
   });
 };
 
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data) {
-    // Broadcast to everyone else.
-    wss.clients.forEach(function each(client) {
-    //   // if (client !== ws && client.readyState === WebSocket.OPEN) {
-    //   //if (client.readyState === SocketServer.OPEN) {
-    //     console.log("in the for loop");
-      console.log("client",client);
-      client.send(data);
+wss.on("connection", function connection(ws) {
+  ws.on("message", function incoming(data) {
 
-    //      //console.log('received: %s', data);
-    //   //}
-    });
+
+
+    data = JSON.parse(data);
+    data.id = uuidV1()
+    if (data.type === "postNotification") {
+      data.type = "incomingNotification"
+    } else if (data.type === "postMessage") {
+      data.type = "incomingMessage"
+    } else {
+      data.type = "nonsense, please ignore";
+    }
+    // console.log("DESPAIR:", data)
+    wss.broadcast(data);
+
+
 
   });
 
-
-
-// wss.on('connection', function connection(ws) {
-//   ws.on('message', function incoming(message) {
-
-//     console.log('received: %s', message);
-
-//      ws.send(message);
-//   });
 
 
 
