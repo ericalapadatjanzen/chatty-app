@@ -73,6 +73,12 @@
       top: 0;
     }
 
+    .navbar .onlineCount{
+      float: right;
+      padding: 1.5em;
+      font-style: italic;
+    }
+
     .navbar-brand {
       color: inherit;
       display: block;
@@ -83,4 +89,8 @@
       line-height: 60px;
       padding: 0 10px;
       text-decoration: none;
+    }
+
+    .notification{
+      font-style: italic;
     }
