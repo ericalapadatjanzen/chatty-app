@@ -5,7 +5,7 @@ class ChatBar extends Component {
     super(props);
 
     this.state = {
-      username: "",
+      username: "anonymous",
       content: "",
       note: ""
     };
@@ -14,15 +14,12 @@ class ChatBar extends Component {
     this.onContentChange = this.onContentChange.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
   }
-
   onNameChange(event) {
     this.setState({ username: event.target.value });
   }
-
   onContentChange(event) {
     this.setState({ content: event.target.value });
   }
-
   onKeyPress(event) {
     if (event.key === "Enter") {
       this.props.newMessage(this.state.content);

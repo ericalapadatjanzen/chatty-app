@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-
 import Message from "./Message.jsx";
 
 class MessageList extends Component {
   render() {
+    // a cool way to refactor and attach id, username etc to message
     const messages = this.props.messages.map(message => {
       const { id, username, content, type, userColor } = message;
 

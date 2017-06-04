@@ -7,10 +7,10 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    // maybe make currentUser back into object + add in usercolor
+    // Could refector currentUser into object + add in usercolor
     this.state = {
-      username: "",
-      messages: [],
+      username: "anonymous",
+      messages: [], //messages coming from the server get pushed here
       onlineUsers: 0,
       userColor: "black"
     };
@@ -19,6 +19,7 @@ class App extends Component {
     this.addNewUserName = this.addNewUserName.bind(this);
   }
 
+  // Adds a new notification and sends it to server as a string
   addNewNotification(note) {
     const notification = {
       type: "postNotification",
@@ -26,7 +27,7 @@ class App extends Component {
     };
     this.socket.send(JSON.stringify(notification));
   }
-
+  // Adds a new message and sends to the server as a string
   addNewMessage(content) {
     const message = {
       username: this.state.username,
@@ -36,7 +37,7 @@ class App extends Component {
     };
     this.socket.send(JSON.stringify(message));
   }
-
+  // If the old user name doesn't match the new user name then adds a new notification; user name gets set to newUserName
   addNewUserName(newUserName) {
     if (this.state.username !== newUserName) {
       this.addNewNotification(
@@ -45,7 +46,7 @@ class App extends Component {
       this.setState({ username: newUserName });
     }
   }
-
+  //invoked immedietly after component is mounted, data coming back from the server is assigned new states here
   componentDidMount() {
     this.socket = new WebSocket("ws://127.0.0.1:3001");
 
@@ -73,7 +74,7 @@ class App extends Component {
       console.log("connected to Server");
     };
   }
-
+  // This renders the DOM elements
   render() {
     return (
       <div className="messageContainer">

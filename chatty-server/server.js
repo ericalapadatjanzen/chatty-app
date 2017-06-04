@@ -7,9 +7,9 @@ const uuidV1 = require("node-uuid");
 // Set the port to 3001
 const PORT = 3001;
 
-// Create a new express server
+// Creates new express server
 const server = express()
-  // Make the express server serve static assets (html, javascript, css) from the /public folder
+  // Makes the express server serve static assets (html, javascript, css) from the /public folder
   .use(express.static("public"))
   .listen(PORT, "0.0.0.0", "localhost", () =>
     console.log(`Listening on ${PORT}`)
@@ -17,10 +17,6 @@ const server = express()
 
 // Create the WebSockets server
 const wss = new SocketServer({ server });
-
-// Set up a callback that will run when a client connects to the server
-// When a client connects they are assigned a socket, represented by
-// the ws parameter in the callback.
 
 // Broadcasts the data as a string for each user connected
 wss.broadcast = function broadcast(data) {
@@ -36,7 +32,17 @@ wss.broadcast = function broadcast(data) {
 
 // Outputs a random colour from the array
 function pickColor() {
-  var colors = ["#f98866", "#ff420E", "#80BD9E", "#89DA59"];
+  // added more than 4 colors because was having trouble getting a variety for screenshots
+  var colors = [
+    "#f98866",
+    "#ff420E",
+    "#80BD9E",
+    "#89DA59",
+    "#ff33CC",
+    "#00CCFF",
+    "#3333CC",
+    "#990099"
+  ];
   var random_color = colors[Math.floor(Math.random() * colors.length)];
   return random_color;
 }
@@ -46,7 +52,7 @@ function handleMessage(data) {
   data = JSON.parse(data);
   data.id = uuidV1();
 
-  //could change to string .repl
+  //could change to string.repl
   if (data.type === "postNotification") {
     data.type = "incomingNotification";
   } else if (data.type === "postMessage") {
@@ -64,6 +70,7 @@ function updateOnlineCount() {
   });
 }
 
+// Passes color to each new user
 function handleConnection(client) {
   console.log("New client connected!");
   console.log("We are at " + wss.clients.size + " clients!");
@@ -78,7 +85,7 @@ function handleConnection(client) {
   updateOnlineCount();
 
   client.on("message", handleMessage);
-  // Set up a callback for when a client closes the socket. This usually means they closed their browser.
+  // Callback for when a client closes the socket.
   client.on("close", () => {
     console.log("Client disconnected");
     updateOnlineCount();
