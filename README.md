@@ -4,7 +4,7 @@ ChattyApp allows users to communicate with each other without having to register
 
 ## Final Product
 
-!["Screenshot of the home page"](https://github.com/itsalysialynn/ChattyApp/blob/master/images/home_page.png)
+!["Screenshot of the home page"](https://github.com/ericalapadatjanzen/chatty-app/blob/master/images/homePageScreenShot.png)
 
 ### Dependencies
 
